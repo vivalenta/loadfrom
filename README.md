@@ -2,7 +2,24 @@
 
 need (wget+ffmpeg+youtube-dl)
 
-currently Ukrainian location only!
+currently Ukrainian and English location only!
+currently chandge in config, not avto
+
+## Config
+config file is config.php, obviously
+`include 'lang_ua.php'; `select location
+
+`include 'lang_en.php'; `English 
+
+`$myDirectory = '/var/www/ltest.com/downloads';` patch to folder downloads
+
+`$mySite = 'test.com';` site name, example "Home loader"
+ 
+`$mySiteHttps = 'https://test.com';` full url of site
+
+`$pass = 'pass';` pass key (api key) for view log or backup
+
+`$logfile = '/var/log/nginx/test.com-ssl-access.log';` nginx log file (currently nginx only)
 
 ## Usage
 ### log nginx 
