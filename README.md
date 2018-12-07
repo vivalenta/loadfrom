@@ -3,10 +3,12 @@
 need (wget+ffmpeg+youtube-dl)
 
 currently Ukrainian and English location only!
+
 currently chandge in config, not avto
 
 ## Config
 config file is config.php, obviously
+
 `include 'lang_ua.php'; `select location
 
 `include 'lang_en.php'; `English 
