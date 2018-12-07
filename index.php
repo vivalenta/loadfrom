@@ -6,9 +6,10 @@ $myDirectorySize = get_dir_size($myDirectory);
 date_default_timezone_set('Europe/Kiev');
 $dirArray = getDirContents($myDirectory);
 $indexCount = count($dirArray);
-echo pasteHeader("Завантаження $mySite");
+echo pasteHeader($lang["Loader"]." $mySite");
+//$lang["URL (https?://)"];
 print("<TABLE>\r\n");
-print("<TR><TH>Ім'я</TH><th width=200px >Дата</th><th width=120px >Розмір</th><th width=40px >Вид</th></TR>\r\n");
+print("<TR><TH>".$lang["Name"]."</TH><th width=200px >".$lang["Data"]."</th><th width=120px >".$lang["Size"]."</th><th width=40px >".$lang["Del"]."</th></TR>\r\n");
 for($index=0; $index < $indexCount; $index++) {
        if ((substr("$dirArray[$index]", 0, 1) != "." ) and !is_dir($myDirectory.DIRECTORY_SEPARATOR.$dirArray[$index])){  // don't list hidden files
         print("<TR><td style='text-align: left;'><a href='http://$mySite/downloads/"); print $dirArray[$index];print("'>$dirArray[$index]</a></td>");
@@ -18,11 +19,11 @@ for($index=0; $index < $indexCount; $index++) {
         print("</TR>\r\n");
     }
 }
-print("</TABLE>\r\n <small> Актуально на: ".date("Y-m-d H:i:s")." || Занято: ".filesize_formatted($myDirectorySize)." з ".filesize_formatted(107374182400)." (".round($myDirectorySize/1073741824, 2)." % )  <a class='mini'>вільно ".filesize_formatted(disk_free_space("/"))."</a></small>");
+print("</TABLE>\r\n <small>".$lang["Actual on"].": ".date($lang["DataTimeFormat"])." || ".$lang["Busy"].": ".filesize_formatted($myDirectorySize)." ".$lang["From"]." ".filesize_formatted(107374182400)." (".round($myDirectorySize/1073741824, 2)." % )  <a class='mini'>".$lang["Free"]." ".filesize_formatted(disk_free_space("/"))."</a></small>");
 print("<br> <progress max='107374182400' value='".$myDirectorySize."'></progress><br><br><H2>\r\n");
-print ("<a class='button' href='.'>Оновити дані</a> ");
-print ("<a class='button' href='d.php'>Додати</a> ");
-print ("<H1>Посилання: </H1>\n");
+print ("<a class='button' href='.'>".$lang["Refresh"]."</a> ");
+print ("<a class='button' href='d.php'>".$lang["Add"]."</a> ");
+print ("<H1>".$lang["Urls"].": </H1>\n");
 
 for($index=0; $index < $indexCount; $index++) {
 	if ((substr("$dirArray[$index]", 0, 1) != "." ) and !is_dir($myDirectory.DIRECTORY_SEPARATOR.$dirArray[$index])){
