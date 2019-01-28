@@ -23,7 +23,6 @@ if (preg_match('/^(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\
 			$SourceFormat .= "<a class='button' href='$actual_link&format=$Sonuc'>".Qualitys($Sonuc)."</a>,  ";
 		}
 	}
-	//$SourceFormat = trim($SourceFormat, ', ');
 	if ($format == "") {
 	echo "<h1><strong>".$lang["Choose quality"]."</strong></h1><br><h3>".$lang["Avitable quality"].": </h3><br>\r\n";
 	echo ($SourceFormat." <a class='button' href='$actual_link&format=000'>".$lang["Best"]."</a><br>");
@@ -65,6 +64,25 @@ elseif (preg_match('/^https?:\/\/[a-z0-9_-]*?.googlevideo.com\/videoplayback\?/i
 	$name = formatName(urldecode($matches[0]));
         $Command = 'wget -O "'.$myDirectory.DIRECTORY_SEPARATOR.$name.'" "'.$url.'"';
 
+}
+elseif (preg_match('/^https:\/\/soundcloud.com*/iu', $url)) {
+	$sckey = "6QvdRwJ2FQEAWlMafWqRjnI9hsdVKNeE";
+        $url_api='https://api.soundcloud.com/resolve.json?url='.$url.'&client_id='.$sckey;
+        $json = file_get_contents($url_api);
+        $obj=json_decode($json);
+        if($obj->kind=='playlist'){
+                $index=0;
+                foreach ($obj->tracks as $key) {
+                        $index++;
+                        $name = formatName($key->title).'.mp3';
+	                $Command = $Command.' wget -O "'.$myDirectory.DIRECTORY_SEPARATOR.$name.'" "'.$key->stream_url.'?client_id='.$sckey.'" &';
+			echo "<a href='".$key->stream_url."?client_id=".$sckey."'>".$key->title.'</a><br><br>';
+		}
+        } else {
+		$name = formatName($obj->title).'.mp3';
+	        $Command = 'wget -O "'.$myDirectory.DIRECTORY_SEPARATOR.$name.'" "'.$obj->stream_url.'?client_id='.$sckey.'"';
+		echo "<a href='".$obj->stream_url."?client_id=".$sckey."'download>".$obj->title."</a>";
+	}
 }
 elseif (preg_match('/^https?:\/\/.*/', $url)) {
         echo "HTTP<br>\r\n";
