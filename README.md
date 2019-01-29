@@ -1,4 +1,4 @@
-# loader video from youtube + M3U8 + link 
+# loader video from youtube + M3U8 + SoundCloud + link 
 
 need (wget+ffmpeg+youtube-dl)
 
