@@ -72,6 +72,7 @@ function GetVideoSourceUrl($Baglanti){
         $Source = file_get_contents('http://www.youtube.com/get_video_info?&video_id='.$YtVideoID.'&hl=tr');
         parse_str($Source,$Results);
         $Title = $Results['title'];
+	$Thumbnail = $Results['thumbnail'];
         $Results['url_encoded_fmt_stream_map'] = isset($Results['url_encoded_fmt_stream_map'])?$Results['url_encoded_fmt_stream_map']:false;
         if($Results['url_encoded_fmt_stream_map']){
                 $UrlInformation = explode(',',$Results['url_encoded_fmt_stream_map']);
@@ -82,7 +83,7 @@ function GetVideoSourceUrl($Baglanti){
 			$Links[] = '<a href="'.$VideoUrl.'">'.Qualitys($VideoInformation['itag']).'</a>';
                 }
         }
-        return array($Title, $Formats, $Links);
+        return array($Title, $Formats, $Links, $Thumbnail);
 }
 
 function formatName($string) {
@@ -205,4 +206,21 @@ function get_dir_size($directory) {
     return $size;
 }
 
+
+
+function startsWith($haystack, $needle)
+{
+     $length = strlen($needle);
+     return (substr($haystack, 0, $length) === $needle);
+}
+
+function endsWith($haystack, $needle)
+{
+    $length = strlen($needle);
+    if ($length == 0) {
+        return true;
+    }
+
+    return (substr($haystack, -$length) === $needle);
+}
 ?>

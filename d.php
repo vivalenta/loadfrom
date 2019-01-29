@@ -23,6 +23,7 @@ if (preg_match('/^(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\
 			$SourceFormat .= "<a class='button' href='$actual_link&format=$Sonuc'>".Qualitys($Sonuc)."</a>,  ";
 		}
 	}
+	echo ("<img src='http://img.youtube.com/vi/".$founded[1]."/mqdefault.jpg' alt='Пхото'/><br>\r\n");
 	if ($format == "") {
 	echo "<h1><strong>".$lang["Choose quality"]."</strong></h1><br><h3>".$lang["Avitable quality"].": </h3><br>\r\n";
 	echo ($SourceFormat." <a class='button' href='$actual_link&format=000'>".$lang["Best"]."</a><br>");
@@ -48,7 +49,7 @@ if (preg_match('/^(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\
 		}
 	}
 }
-elseif (preg_match("/^https?:\/\/.*\.(m3u8)$/i", $url) ) {
+elseif (preg_match("/^https?:\/\/.*\.(m3u8)$/i", $url)) {
 	echo "M3U8<br>\r\n";
 	if ($name == '') {
 		echo $lang["The name is not specified, the random name will be used"]." <br><br>";
@@ -68,8 +69,10 @@ elseif (preg_match('/^https?:\/\/[a-z0-9_-]*?.googlevideo.com\/videoplayback\?/i
 elseif (preg_match('/^https:\/\/soundcloud.com*/iu', $url)) {
 	$sckey = "6QvdRwJ2FQEAWlMafWqRjnI9hsdVKNeE";
         $url_api='https://api.soundcloud.com/resolve.json?url='.$url.'&client_id='.$sckey;
-        $json = file_get_contents($url_api);
+	$json = file_get_contents($url_api);
         $obj=json_decode($json);
+	//var_dump($obj);
+        echo ("<img src='".str_replace("large", "crop", $obj->artwork_url)."' title='".str_replace("'", "",$obj->description)."'/><br><br>\r\n\r\n");
         if($obj->kind=='playlist'){
                 $index=0;
                 foreach ($obj->tracks as $key) {
@@ -80,18 +83,18 @@ elseif (preg_match('/^https:\/\/soundcloud.com*/iu', $url)) {
 		}
         } else {
 		$name = formatName($obj->title).'.mp3';
-	        $Command = 'wget -O "'.$myDirectory.DIRECTORY_SEPARATOR.$name.'" "'.$obj->stream_url.'?client_id='.$sckey.'"';
-		echo "<a href='".$obj->stream_url."?client_id=".$sckey."'download>".$obj->title."</a>";
+		$Command = 'wget -O "'.$myDirectory.DIRECTORY_SEPARATOR.$name.'" "'.$obj->stream_url.'?client_id='.$sckey.'"';
+		echo "<a href='".$obj->stream_url."?client_id=".$sckey."'>".$obj->title."</a><br><br><br>\r\n";
 	}
+	if(!isset($_GET["donwload"])){ $errors = 1; echo ("<a class='button' href='$actual_link&donwload=yes'>".$lang["download"]."</a><br>"); }
 }
 elseif (preg_match('/^https?:\/\/.*/', $url)) {
         echo "HTTP<br>\r\n";
-        $Command = 'wget -P '.$myDirectory.DIRECTORY_SEPARATOR.' '.$url;
+        $Command = 'wget --progress=bar -P '.$myDirectory.DIRECTORY_SEPARATOR.' '.$url;
 	if (trim($name) != ''){
 		echo lang["File name"].": $name<br><br>";
-		$Command = 'wget -O "'.$myDirectory.DIRECTORY_SEPARATOR.$name.'" "'.$url.'"';
-         }
-
+		$Command = 'wget --progress=bar -O "'.$myDirectory.DIRECTORY_SEPARATOR.$name.'" "'.$url.'"';
+	} else {$name = basename($url);}
 }
 
 else if ($url == '') {
@@ -120,6 +123,6 @@ else if ($errors == 255) {
 else {
 	echo "<br><font size='30' color='red'>".$lang["Error"]."</font>";
 }
-echo "<H2 align='center'><a class='button' href='$mySiteHttps'>".$lang["Home"]."</a></H2><br>\r\n";
+echo "<H2><a class='button' href='$mySiteHttps'>".$lang["Home"]."</a></H2><br>\r\n";
 
 ?>

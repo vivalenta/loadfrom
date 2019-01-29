@@ -30,6 +30,7 @@ $lang = array(
     "does not exist" => "не існує",
     "Done" => "Готово",
     "Deleted" => "Видалено",
-    "Welcome" => "Привіт"
+    "Welcome" => "Привіт",
+	"download" => "Звантажити"
 );
 ?>

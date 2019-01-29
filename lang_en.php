@@ -30,6 +30,7 @@ $lang = array(
     "does not exist" => "does not exist",
     "Done" => "Done",
     "Deleted" => "Deleted",
-    "Welcome" => "Welcome"
+    "Welcome" => "Welcome",
+    "download" => "Download"
 );
 ?>

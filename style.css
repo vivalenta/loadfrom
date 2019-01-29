@@ -4,6 +4,7 @@ body {
 	font-size: 120%; 
 	font-family: 'Space Engineers', 'Roboto';
 	word-wrap: break-word;
+	text-align: center;
 }
 
 a {
@@ -79,6 +80,12 @@ a.mini {
 	text-decoration: none;
 	text-shadow: none;
         color: #3f3f3f;
+}
+
+img {
+	border-radius: 4%;
+	border: 15px double #0C2F02;
+	padding: 0px;
 }
 
 input[type=checkbox]
