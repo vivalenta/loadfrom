@@ -80,7 +80,7 @@ function GetVideoSourceUrl($Baglanti){
                         parse_str($Bilgi,$VideoInformation);
                         $VideoUrl = urldecode($VideoInformation['url']);
 			$Formats[] = $VideoInformation['itag'];
-			$Links[] = '<a href="'.$VideoUrl.'">'.Qualitys($VideoInformation['itag']).'</a>';
+			$Links[] = urlencode($VideoUrl)."&log=on&name=".urlencode(formatName($Title)).".mp4'>ALTERA ".Qualitys($VideoInformation['itag'])."</a>,  ";
                 }
         }
         return array($Title, $Formats, $Links, $Thumbnail);

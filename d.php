@@ -23,10 +23,18 @@ if (preg_match('/^(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\
 			$SourceFormat .= "<a class='button' href='$actual_link&format=$Sonuc'>".Qualitys($Sonuc)."</a>,  ";
 		}
 	}
+
+	$SourceFiles = $Results[2];
+        $SourceFile = '';
+        foreach ($SourceFiles as $key => $Sonuc1) {
+                        $SourceFile .= "<a class='button' href='http://$_SERVER[HTTP_HOST]/d.php?url=".$Sonuc1;
+        }
+
 	echo ("<img src='http://img.youtube.com/vi/".$founded[1]."/mqdefault.jpg' alt='Пхото'/><br>\r\n");
 	if ($format == "") {
 	echo "<h1><strong>".$lang["Choose quality"]."</strong></h1><br><h3>".$lang["Avitable quality"].": </h3><br>\r\n";
 	echo ($SourceFormat." <a class='button' href='$actual_link&format=000'>".$lang["Best"]."</a><br>");
+	echo "<br>\r\n".$SourceFile."<br>\r\n";
 	$errors = 1;
 	}
 	else {
@@ -58,13 +66,6 @@ elseif (preg_match("/^https?:\/\/.*\.(m3u8)$/i", $url)) {
 	$name = formatName($name);
 	$filename = $myDirectory.DIRECTORY_SEPARATOR.$name;
 	$Command = 'ffmpeg -i '.$url.' -bsf:a aac_adtstoasc -c copy "'.$filename.'.mp4"';
-}
-elseif (preg_match('/^https?:\/\/[a-z0-9_-]*?.googlevideo.com\/videoplayback\?/iu', $url)) {
-	preg_match("/(?<=title\=)(?s)(.*$)/iu", $url, $matches);
-        echo "GoogleVideo<br>\r\n";
-	$name = formatName(urldecode($matches[0]));
-        $Command = 'wget -O "'.$myDirectory.DIRECTORY_SEPARATOR.$name.'" "'.$url.'"';
-
 }
 elseif (preg_match('/^https:\/\/soundcloud.com*/iu', $url)) {
 	$sckey = "6QvdRwJ2FQEAWlMafWqRjnI9hsdVKNeE";
