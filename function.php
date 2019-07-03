@@ -69,9 +69,9 @@ function GetVideoSourceUrl($Baglanti){
         $YtVideoID = substr($YtVideoID, 0, 11);
         $Links = array();
         $Title = '';
-        $Source = file_get_contents('http://www.youtube.com/get_video_info?&video_id='.$YtVideoID.'&hl=tr');
+        $Source = file_get_contents('https://www.youtube.com/get_video_info?&video_id='.$YtVideoID.'&hl=tr');
         parse_str($Source,$Results);
-        $Title = $Results['title'];
+	$Title = $Results['title'];
 	$Thumbnail = $Results['thumbnail'];
         $Results['url_encoded_fmt_stream_map'] = isset($Results['url_encoded_fmt_stream_map'])?$Results['url_encoded_fmt_stream_map']:false;
         if($Results['url_encoded_fmt_stream_map']){

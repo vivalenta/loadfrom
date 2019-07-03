@@ -8,6 +8,7 @@ $format = $_GET['format'];
 $log =  $_GET['log'];
 $actual_link = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 $errors = 0;
+
 echo pasteHeader($lang["Loader"]." $mySite");
 
 if (preg_match('/^(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/i', $url, $founded)){
@@ -42,8 +43,11 @@ if (preg_match('/^(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\
 		if (trim($name) != ''){
 			$name = formatName($name);
 		}
-		else {
+		elseif (trim(formatName($Title)) != ''){
 			$name = formatName($Title);
+		}
+		else {
+			$name = formatName($founded[1]);
 		}
 		echo $lang["File name"].": $name<br><br>";
 		if ($format == '999'){
@@ -111,7 +115,7 @@ if (file_exists($name.'.mp4')) {
 //echo $Command;
 if ( $errors == 0) {
 	if ($log == 'on'){
-		exec( $Command.' > "'.$myDirectory.DIRECTORY_SEPARATOR.$name.'"_log.txt 2>&1' );
+		exec( $Command.' > "'.$myDirectory.DIRECTORY_SEPARATOR.$name.'"_log.txt 2>&1 &' );
 	}
 	else {
 		exec( $Command.' > /dev/null &' );
