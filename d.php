@@ -15,22 +15,23 @@ if (preg_match('/^(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\
 	echo "<h2>Youtube</h2><br>\r\n";
 	echo ($lang["Video ID"].": ".formatName($founded[1])."<br>\r\n");
 	$Results = GetVideoSourceUrl($founded[1]);
+	//print_r($Results[5]);
         $Title = $Results[0];
         echo ($lang["Video Name"].": ".$Title."<br>\r\n");
 	$SourceFormats = $Results[1];
 	$SourceFormat = '';
-        foreach ($SourceFormats as $key => $Sonuc) {
-		if (preg_match('/([0-9]{2}$)/',$Sonuc)) {
-			$SourceFormat .= "<a class='button' href='$actual_link&format=$Sonuc'>".Qualitys($Sonuc)."</a>,  ";
+	$i = -1;
+        foreach ($Results[1] as $key => $Sonuc) {
+		$i++;
+		if (preg_match('/([0-9]{2,3}$)/',$Sonuc)) {
+			//print_r($Results[1][i]);
+			$SourceFormat .= "<a class='button' href='$actual_link&format=$Sonuc&log=on&name=".urlencode(formatName($Title)).".mp4'>".Qualitys($Sonuc)." (".$Results[3][$i].")</a>,  ";
+			$SourceFormat .= "<a class='button' href='http://$_SERVER[HTTP_HOST]/d.php?url=".$Results[2][$i]."&log=on&name=".urlencode(formatName($Title)).".".$Results[4][$i]."'>ALTERA ".Qualitys($Sonuc)." (".$Results[3][$i]."</a><br>  \r\n";
 		}
 	}
 
 	$SourceFiles = $Results[2];
         $SourceFile = '';
-        foreach ($SourceFiles as $key => $Sonuc1) {
-                        $SourceFile .= "<a class='button' href='http://$_SERVER[HTTP_HOST]/d.php?url=".$Sonuc1;
-        }
-
 	echo ("<img src='http://img.youtube.com/vi/".$founded[1]."/mqdefault.jpg' alt='Пхото'/><br>\r\n");
 	if ($format == "") {
 	echo "<h1><strong>".$lang["Choose quality"]."</strong></h1><br><h3>".$lang["Avitable quality"].": </h3><br>\r\n";

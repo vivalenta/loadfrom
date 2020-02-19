@@ -3,6 +3,11 @@ include 'config.php';
 function pasteHeader($title){
 return "<!DOCTYPE html>\r\n<meta http-equiv='content-type' content='text/html; charset=utf-8' />\r\n<title>$title</title>\r\n<link rel='stylesheet' href='style.css'>\r\n";
 }
+function filesize_formatted($size){
+    $units = array( 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
+    $power = $size > 0 ? floor(log($size, 1024)) : 0;
+    return number_format($size / pow(1024, $power), 3, '.', ',') . ' ' . $units[$power];
+}
 
 function getDirContents($directoryF, $original = ''){
 	if (empty($original)) { $original = $directoryF; }
@@ -57,7 +62,11 @@ function Qualitys($iTag){
                 case 278:$Message = '144p - Webm (256x144)';break;
                 case 133:$Message = '240p - mp4 (426x240)';break;
                 case 242:$Message = '240p - webm (426x240)';break;
-		case 243:$Message = '360p - webm (640x360)';break;
+		case 243:$Message = '360p - webm';break;
+                case 137:$Message = '1080p - avc1 video only';break;
+                case 243:$Message = '360p - webm (640x360)';break;
+                case 599:$Message = 'audio @32k m4a/mp4a';break;
+                case 600:$Message = 'audio @39k webm/opus';break;
                 default:$Message = 'NotSet';break;
         }
         return $Message;
@@ -69,21 +78,42 @@ function GetVideoSourceUrl($Baglanti){
         $YtVideoID = substr($YtVideoID, 0, 11);
         $Links = array();
         $Title = '';
-        $Source = file_get_contents('https://www.youtube.com/get_video_info?&video_id='.$YtVideoID.'&hl=tr');
-        parse_str($Source,$Results);
-	$Title = $Results['title'];
-	$Thumbnail = $Results['thumbnail'];
-        $Results['url_encoded_fmt_stream_map'] = isset($Results['url_encoded_fmt_stream_map'])?$Results['url_encoded_fmt_stream_map']:false;
-        if($Results['url_encoded_fmt_stream_map']){
-                $UrlInformation = explode(',',$Results['url_encoded_fmt_stream_map']);
-                foreach($UrlInformation as $Bilgi){
-                        parse_str($Bilgi,$VideoInformation);
+        $Source = file_get_contents('https://www.youtube.com/get_video_info?&video_id='.$YtVideoID.'&hl=en');
+        parse_str($Source,$Results2);
+	$Results2['player_response'] = isset($Results2['player_response'])?$Results2['player_response']:false;
+	$Results = json_decode($Results2['player_response'], true);
+        $Title = $Results['videoDetails']["title"];
+        $Thumbnail = $Results['thumbnail']['thumbnails'][0];
+
+        if($Results['streamingData']['adaptiveFormats']){
+                $UrlInformation = $Results['streamingData']['adaptiveFormats'];
+                foreach($UrlInformation as $VideoInformation){
+			if ($VideoInformation['audioChannels']){
+				$VideoUrl = urldecode($VideoInformation['url']);
+                	        $Formats[] = $VideoInformation['itag'];
+        	                $Links[] = urlencode($VideoUrl);
+	                        $size[] = filesize_formatted($VideoInformation['contentLength']);
+				//$Thumbnail = $VideoInformation;
+				//$bitrate[] = $VideoInformation['qualityLabel']." (".filesize_formatted($VideoInformation['bitrate'])."/s)";
+				$mmetype[] = explode("/", explode(";", $VideoInformation['mimeType'])[0])[1];
+			}
+		}
+	}
+
+        if($Results['streamingData']['formats']){
+                $UrlInformation = $Results['streamingData']['formats'];
+                foreach($UrlInformation as $VideoInformation){
                         $VideoUrl = urldecode($VideoInformation['url']);
-			$Formats[] = $VideoInformation['itag'];
-			$Links[] = urlencode($VideoUrl)."&log=on&name=".urlencode(formatName($Title)).".mp4'>ALTERA ".Qualitys($VideoInformation['itag'])."</a>,  ";
-                }
+                        $Formats[] = $VideoInformation['itag'];
+                        $Links[] = urlencode($VideoUrl);
+                        $size[] = filesize_formatted($VideoInformation['contentLength']);
+			//$bitrate[] = $VideoInformation['qualityLabel']." (".filesize_formatted($VideoInformation['bitrate'])."/s)";
+			$mmetype[] = explode("/", explode(";", $VideoInformation['mimeType'])[0])[1];
+			//$Thumbnail = $VideoInformation;
+               }
         }
-        return array($Title, $Formats, $Links, $Thumbnail);
+
+        return array($Title, $Formats, $Links, $size, $mmetype, $bitrate, $Thumbnail);
 }
 
 function formatName($string) {
@@ -191,7 +221,7 @@ function makeRandomString($max=12) {
     return $str;
 }
 
-function filesize_formatted($size)
+function filesize_formatted1($size)
 {
     $units = array( 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
     $power = $size > 0 ? floor(log($size, 1024)) : 0;
