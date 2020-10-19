@@ -1,12 +1,19 @@
 body {
 	background-color: #000000; 
 	color: #6bb120; 
-	font-size: 120%; 
 	font-family: 'Space Engineers', 'Roboto';
 	word-wrap: break-word;
 	text-align: center;
 }
 
+select {
+	text-decoration: none;
+	padding: 10px 30px;
+        border: 4px double #2C5F10;
+        border-radius: 5px;
+        background-color: #000000; 
+        color: #6bb120; 
+}
 a {
 	text-decoration: none;
         color: #9ACD32;
@@ -76,7 +83,6 @@ input {
 
 a.mini { 
         font-family: 'Space Engineers', 'Roboto';
-        font-size: 100%;
 	text-decoration: none;
 	text-shadow: none;
         color: #3f3f3f;
@@ -174,5 +180,57 @@ progress#progressBar:before {
 }
 
 
+html {
+	height: 100%;
+}
 
+body {
+	width: 98%;
+	height: 98%;
+}
+.wrapper {
+	width: 100%;
+	margin: 0 auto;
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+}
+
+
+.header {
+	height: 100px;
+}
+
+.middle {
+	width: 100%;
+	padding: 0 0 100px;
+	position: relative;
+}
+.middle:after {
+	display: table;
+	clear: both;
+	content: '';
+}
+.container {
+	width: 100%;
+	float: left;
+	overflow: hidden;
+}
+.content {
+	padding: 0 0 0 270px;
+}
+
+.left-sidebar {
+	float: left;
+	width: 40%;
+	margin-left: -100%;
+	position: relative;
+}
+
+.footer {
+	width: 100%;
+	margin: -80px auto 0;
+	height: 80px;
+	position: relative;
+}
 

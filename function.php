@@ -21,7 +21,9 @@ function getDirContents($directoryF, $original = ''){
 			$results = array_merge($results, getDirContents($path, $original));
 		}
 	}
-	return $results;
+	if (isset($results)) {
+		return $results;
+	}
 }
 
 
@@ -83,12 +85,13 @@ function GetVideoSourceUrl($Baglanti){
 	$Results2['player_response'] = isset($Results2['player_response'])?$Results2['player_response']:false;
 	$Results = json_decode($Results2['player_response'], true);
         $Title = $Results['videoDetails']["title"];
-        $Thumbnail = $Results['thumbnail']['thumbnails'][0];
+	if (isset($Results['thumbnail']['thumbnails'][0])) { $Thumbnail = $Results['thumbnail']['thumbnails'][0];}
+	//print_r($Results);
 
-        if($Results['streamingData']['adaptiveFormats']){
+        if(isset($Results['streamingData']['adaptiveFormats'])){
                 $UrlInformation = $Results['streamingData']['adaptiveFormats'];
                 foreach($UrlInformation as $VideoInformation){
-			if ($VideoInformation['audioChannels']){
+			if (isset($VideoInformation['audioChannels']) && $VideoInformation['audioChannels']){
 				$VideoUrl = urldecode($VideoInformation['url']);
                 	        $Formats[] = $VideoInformation['itag'];
         	                $Links[] = urlencode($VideoUrl);
@@ -100,20 +103,32 @@ function GetVideoSourceUrl($Baglanti){
 		}
 	}
 
-        if($Results['streamingData']['formats']){
+        if(isset($Results['streamingData']['formats'])){
                 $UrlInformation = $Results['streamingData']['formats'];
                 foreach($UrlInformation as $VideoInformation){
                         $VideoUrl = urldecode($VideoInformation['url']);
                         $Formats[] = $VideoInformation['itag'];
-                        $Links[] = urlencode($VideoUrl);
-                        $size[] = filesize_formatted($VideoInformation['contentLength']);
-			//$bitrate[] = $VideoInformation['qualityLabel']." (".filesize_formatted($VideoInformation['bitrate'])."/s)";
+                        if (isset($VideoUrl)) { $Links[] = urlencode($VideoUrl); } else { $Links[] = ""; }
+			if (isset($VideoInformation['contentLength'])) { $size[] = filesize_formatted($VideoInformation['contentLength']); } else { $size[] = 0;}
+			if (isset( $VideoInformation['qualityLabel'])) { $bitrate[] = $VideoInformation['qualityLabel']." (".filesize_formatted($VideoInformation['bitrate'])."/s)"; } else { $bitrate[] = ""; }
 			$mmetype[] = explode("/", explode(";", $VideoInformation['mimeType'])[0])[1];
-			//$Thumbnail = $VideoInformation;
                }
         }
+	if (isset($Title) && isset($Formats) && isset($Links) && isset($size)) {
+        	return array($Title, $Formats, $Links, $size, $mmetype);
+	}
+}
 
-        return array($Title, $Formats, $Links, $size, $mmetype, $bitrate, $Thumbnail);
+
+function youtube_parse_youtube_id( $data )
+{
+	// IF 11 CHARS
+	if( strlen($data) == 11 )
+	{
+		return $data;
+	}
+	preg_match( "/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/", $data, $matches);
+	return isset($matches[2]) ? $matches[2] : false;
 }
 
 function formatName($string) {
@@ -252,5 +267,24 @@ function endsWith($haystack, $needle)
     }
 
     return (substr($haystack, -$length) === $needle);
+}
+
+function getFromYDL($id) {
+	$outArray = json_decode(shell_exec("/usr/local/bin/youtube-dl -j $id"), true);
+	$Title = $outArray['title'];
+	foreach($outArray["formats"] as $information){
+                        $VideoUrl[] = urldecode($information['url']);
+                        $Formats[] = explode(" ", $information['format'])[0];
+			if ($information['acodec'] != 'none') {
+				$descr[] = explode("-", $information['format'])[1];
+			} else {
+				$descr[] = explode("-", $information['format'])[1];
+			}
+			$size[] = $information['filesize'];
+			$mmetype[] = $information['ext'];
+			$vcodec[] = $information['vcodec'];
+			$acodec[] = $information['acodec'];
+        }
+                return array($Title, $Formats, $VideoUrl, $size, $mmetype, $descr, $vcodec, $acodec);
 }
 ?>

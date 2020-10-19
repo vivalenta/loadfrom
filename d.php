@@ -2,11 +2,17 @@
 include 'function.php';
 include 'config.php';
 
-$url = $_GET['url'];
-$name = $_GET['name'];
-$format = $_GET['format'];
-$log =  $_GET['log'];
-$actual_link = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+$url = "";
+$name = "";
+$format = "";
+$log = "";
+
+if (isset($_GET['url'])) { $url = $_GET['url'];}
+if (isset($_GET['name'])) { $name = $_GET['name'];}
+if (isset($_GET['format'])) { $format = $_GET['format'];}
+if (isset($_GET['log'])) { $log = $_GET['log'];}
+
+$actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 $errors = 0;
 
 echo pasteHeader($lang["Loader"]." $mySite");
@@ -15,52 +21,8 @@ if (preg_match('/^(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\
 	echo "<h2>Youtube</h2><br>\r\n";
 	echo ($lang["Video ID"].": ".formatName($founded[1])."<br>\r\n");
 	$Results = GetVideoSourceUrl($founded[1]);
-	//print_r($Results[5]);
-        $Title = $Results[0];
-        echo ($lang["Video Name"].": ".$Title."<br>\r\n");
-	$SourceFormats = $Results[1];
-	$SourceFormat = '';
-	$i = -1;
-        foreach ($Results[1] as $key => $Sonuc) {
-		$i++;
-		if (preg_match('/([0-9]{2,3}$)/',$Sonuc)) {
-			//print_r($Results[1][i]);
-			$SourceFormat .= "<a class='button' href='$actual_link&format=$Sonuc&log=on&name=".urlencode(formatName($Title)).".mp4'>".Qualitys($Sonuc)." (".$Results[3][$i].")</a>,  ";
-			$SourceFormat .= "<a class='button' href='http://$_SERVER[HTTP_HOST]/d.php?url=".$Results[2][$i]."&log=on&name=".urlencode(formatName($Title)).".".$Results[4][$i]."'>ALTERA ".Qualitys($Sonuc)." (".$Results[3][$i]."</a><br>  \r\n";
-		}
-	}
-
-	$SourceFiles = $Results[2];
-        $SourceFile = '';
-	echo ("<img src='http://img.youtube.com/vi/".$founded[1]."/mqdefault.jpg' alt='Пхото'/><br>\r\n");
-	if ($format == "") {
-	echo "<h1><strong>".$lang["Choose quality"]."</strong></h1><br><h3>".$lang["Avitable quality"].": </h3><br>\r\n";
-	echo ($SourceFormat." <a class='button' href='$actual_link&format=000'>".$lang["Best"]."</a><br>");
-	echo "<br>\r\n".$SourceFile."<br>\r\n";
-	$errors = 1;
-	}
-	else {
-		echo "<h3>".$lang["Selected quality"].": <strong>".Qualitys($format)."</strong></h3><br>\r\n";
-		if (trim($name) != ''){
-			$name = formatName($name);
-		}
-		elseif (trim(formatName($Title)) != ''){
-			$name = formatName($Title);
-		}
-		else {
-			$name = formatName($founded[1]);
-		}
-		echo $lang["File name"].": $name<br><br>";
-		if ($format == '999'){
-			$Command = 'youtube-dl -f "bestvideo+bestaudio/bestvideo+bestaudio" --merge-output-format webm -o "'.$myDirectory.DIRECTORY_SEPARATOR.$name.'.%(ext)s" '.$url;
-		}
-		elseif ($format == '000'){
-			$Command = 'youtube-dl -o "'.$myDirectory.DIRECTORY_SEPARATOR.$name.'.%(ext)s" '.$url;
-		}
-		else{
-			$Command = 'youtube-dl -f '.$format.' -o "'.$myDirectory.DIRECTORY_SEPARATOR.$name.'.%(ext)s" '.$url;
-		}
-	}
+	header("HTTP/1.1 301 Moved Permanently");
+	header("Location: /y.php?id=".$founded[1])."&log".$log;
 }
 elseif (preg_match("/^https?:\/\/.*\.(m3u8)$/i", $url)) {
 	echo "M3U8<br>\r\n";
@@ -99,7 +61,7 @@ elseif (preg_match('/^https?:\/\/.*/', $url)) {
         $Command = 'wget --progress=bar -P '.$myDirectory.DIRECTORY_SEPARATOR.' '.$url;
 	if (trim($name) != ''){
 		echo lang["File name"].": $name<br><br>";
-		$Command = 'wget --progress=bar -O "'.$myDirectory.DIRECTORY_SEPARATOR.$name.'" "'.$url.'"';
+		$Command = 'wget -O "'.$myDirectory.DIRECTORY_SEPARATOR.$name.'" "'.$url.'"';
 	} else {$name = basename($url);}
 }
 
@@ -127,7 +89,7 @@ if ( $errors == 0) {
 else if ($errors == 255) {
 }
 else {
-	echo "<br><font size='30' color='red'>".$lang["Error"]."</font>";
+	echo "<br><font size='30' color='red'>".$lang["ERROR"]."</font>";
 }
 echo "<H2><a class='button' href='$mySiteHttps'>".$lang["Home"]."</a></H2><br>\r\n";
 

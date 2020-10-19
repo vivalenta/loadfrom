@@ -1,9 +1,13 @@
 <?php
 include 'lang_ua.php';
 //include 'lang_en.php';
-$myDirectory = '/var/www/ltest.com/downloads';
+
+
+$myDirectory = '/var/www/test.com/downloads';
+$trashD = '/var/www/test.com/trash';
 $mySite = 'test.com';
 $mySiteHttps = 'https://test.com';
-$pass = 'pass';
-$logfile = '/var/log/nginx/test.com-ssl-access.log';
+$pass = 'testPass';
+$logfile = '/var/log/nginx/access-test.com.log';
+
 ?>
