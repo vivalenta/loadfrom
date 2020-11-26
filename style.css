@@ -1,7 +1,7 @@
 body {
 	background-color: #000000; 
-	color: #6bb120; 
-	font-family: 'Space Engineers', 'Roboto';
+	color: #6bb120;
+	font-family: 'Space Engineers', 'Roboto', 'serif';
 	word-wrap: break-word;
 	text-align: center;
 }
@@ -9,36 +9,36 @@ body {
 select {
 	text-decoration: none;
 	padding: 10px 30px;
-        border: 4px double #2C5F10;
-        border-radius: 5px;
-        background-color: #000000; 
-        color: #6bb120; 
+	border: 4px double #2C5F10;
+	border-radius: 5px;
+	background-color: #000000;
+	color: #6bb120;
 }
 a {
 	text-decoration: none;
-        color: #9ACD32;
-        background-color: #000000;
-        white-space: nowrap;
+	color: #9ACD32;
+	background-color: #000000;
+	white-space: nowrap;
 }
 
 a.button {
-        -webkit-appearance: button;
-        -moz-appearance: button;
-        appearance: button;
+	-webkit-appearance: button;
+	-moz-appearance: button;
+	appearance: button;
 	line-height: 3;
 	padding: 15px 30px;
-        border: 4px double #2C5F10;
+	border: 4px double #2C5F10;
 	border-radius: 5px;
 }
 
 a.button:hover {
-        border: 4px double #888800;
+	border: 4px double #888800;
 }
 
 a.button1 {
-        -webkit-appearance: button;
-        -moz-appearance: button;
-        appearance: button;
+	-webkit-appearance: button;
+	-moz-appearance: button;
+	appearance: button;
 	padding: 2px 4px;
 	border: 2px double #2C5F10;
 }
@@ -52,46 +52,43 @@ a:visited {
 }
 
 a:hover {
-        color:#D9EB00;
+	color:#D9EB00;
 	text-shadow: 0 0 5px #aaaa00;
 }
 
 input:hover {
-        color:#D9EB00;
-        text-decoration: none;
-        text-shadow: 0 0 3px #aaaa00;
+	color:#D9EB00;
+	text-decoration: none;
+	text-shadow: 0 0 3px #aaaa00;
 }
 input:active {
 	color:#CAFDA2;
 	text-decoration: underline;
 }
-input { 
-	font-family: 'Space Engineers', 'Roboto';
+input {
 	align: top;
 	font-size: 120%;
-	clear:both; 
-	padding-left: 6px;
+	clear:both;
 	position: relative;
 	border-radius: 5px;
 	color: #9ACD32;
 	background-color: #000000;
 	border: 4px double #2C5F10;
-	padding: 4px 16px; 
+	padding: 4px 16px;
 	left: 8px;
 	margin: 6px;
 }
 
-a.mini { 
-        font-family: 'Space Engineers', 'Roboto';
+a.mini {
 	text-decoration: none;
 	text-shadow: none;
-        color: #3f3f3f;
+	color: #3f3f3f;
 }
 
 img {
 	border-radius: 4%;
 	border: 15px double #0C2F02;
-	padding: 0px;
+	padding: 0;
 }
 
 input[type=checkbox]
@@ -120,10 +117,10 @@ table {
 } 
 
 td {
-  overflow: hidden;
-  border: 2px solid #2C5F10;
-  cellpadding: 5;
-  cellspacing: 0;
+	overflow: hidden;
+	border: 2px solid #2C5F10;
+	cellpadding: 5;
+	cellspacing: 0;
 	text-align: center;
 	vertical-align: middle;
 } 
@@ -136,7 +133,7 @@ th {
 tbody tr:hover {
 	background-color: #222222;
 	text-color: #D9EB00;
-        color: #D9EB00;
+	color: #D9EB00;
 }
 
 
@@ -168,15 +165,15 @@ progress#progressBar:before {
 }
 
 ::-moz-progress-bar {
-  background-color: orange;
+	background-color: orange;
 }
 
 :indeterminate::-moz-progress-bar {
-  width: 0;
+	width: 0;
 }
 
 ::-webkit-progress-value {
-  background-color: orange;
+	background-color: orange;
 }
 
 
@@ -193,7 +190,6 @@ body {
 	margin: 0 auto;
 	min-height: 100%;
 	height: auto !important;
-	height: 100%;
 }
 
 
@@ -233,4 +229,3 @@ body {
 	height: 80px;
 	position: relative;
 }
-

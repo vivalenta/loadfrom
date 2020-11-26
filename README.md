@@ -13,7 +13,7 @@ config file is config.php, obviously
 
 `include 'lang_en.php'; `English 
 
-`$myDirectory = '/var/www/ltest.com/downloads';` patch to folder downloads
+`$downloadsDirectory = '/var/www/ltest.com/downloads';` patch to folder downloads
 
 `$mySite = 'test.com';` site name, example "Home loader"
  

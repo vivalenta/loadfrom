@@ -1,16 +1,11 @@
 <?php
-include 'function.php';
-include 'config.php';
+require 'function.php';
+require 'config.php';
 
-$id = "";
-$name = "";
-$format = "";
-$log = "";
-
-if (isset($_GET['id'])) { $id = $_GET['id'];}
-if (isset($_GET['name'])) { $name = $_GET['name'];}
-if (isset($_GET['format'])) { $format = $_GET['format'];}
-if (isset($_GET['log'])) { $log = $_GET['log'];}
+if (isset($_GET['id'])) $id = $_GET['id'];
+if (isset($_GET['name'])) $name = $_GET['name'];
+if (isset($_GET['format'])) $format = $_GET['format'];
+if (isset($_GET['log'])) $log = $_GET['log'];
 
 $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 $errors = 0;
@@ -18,10 +13,11 @@ $errors = 0;
 echo pasteHeader($lang["Loader"]." $mySite");
 ?>
 <script type="text/javascript">
-var myObj;
-var uriA = window.location.href;
-function addToList(item, index) {
-	if (myObj[6][index] == "none") {
+    let myObj;
+    let uriA = window.location.href;
+
+    function addToList(item, index) {
+	if (myObj[6][index] === "none") {
 		document.getElementById("aformat").innerHTML += "<option value=" + item + ">" + myObj[4][index] + " - " + myObj[5][index] + " | "+ humanFileSize(myObj[3][index]) + "</option>";
 	} else {
 		document.getElementById("vformat").innerHTML += "<option value=" + item + ">" + myObj[4][index] + " - " + myObj[5][index] + " | "+ humanFileSize(myObj[3][index]) + "</option>";
@@ -29,27 +25,27 @@ function addToList(item, index) {
 }
 
 function UpdateSelect () {
-	var vindex = myObj[1].indexOf(document.getElementById("vformat").options[document.getElementById("vformat").selectedIndex].value);
-        var aindex = myObj[1].indexOf(document.getElementById("aformat").options[document.getElementById("aformat").selectedIndex].value);
-	var audio = myObj[7][vindex];
-	if (audio == "none" || vindex == -1) {
+    let video_index = myObj[1].indexOf(document.getElementById("vformat").options[document.getElementById("vformat").selectedIndex].value);
+    let audio_index = myObj[1].indexOf(document.getElementById("aformat").options[document.getElementById("aformat").selectedIndex].value);
+    let audio = myObj[7][video_index];
+    if (audio == "none" || video_index == -1) {
 		document.getElementById("aformat").style.color = document.getElementById("vformat").style.color
 		document.getElementById("aformat").disabled = false;
-		if (vindex == -1) {
-			document.getElementById("info").innerHTML = "<h3>Всього: " + humanFileSize(myObj[3][aindex]) + "</h3><br>" +
+		if (video_index == -1) {
+			document.getElementById("info").innerHTML = "<h3>Всього: " + humanFileSize(myObj[3][audio_index]) + "</h3><br>" +
 			"<h1><a href=" + uriA + "&format=" + document.getElementById("aformat").options[document.getElementById("aformat").selectedIndex].value + ">Download</a></h1>";
 
 		} else {
-			document.getElementById("info").innerHTML = "<small>" + myObj[4][vindex] + " - " + myObj[5][vindex] + " | " + humanFileSize(myObj[3][vindex]) +
-			" + "  + myObj[4][aindex] + " - " + myObj[5][aindex] + " | " + humanFileSize(myObj[3][aindex]) +
-			"</small><br><h3>Всього: " + humanFileSize((myObj[3][aindex] + myObj[3][vindex])) + "</h3><br>"
+			document.getElementById("info").innerHTML = "<small>" + myObj[4][video_index] + " - " + myObj[5][video_index] + " | " + humanFileSize(myObj[3][video_index]) +
+			" + "  + myObj[4][audio_index] + " - " + myObj[5][audio_index] + " | " + humanFileSize(myObj[3][audio_index]) +
+			"</small><br><h3>Всього: " + humanFileSize((myObj[3][audio_index] + myObj[3][video_index])) + "</h3><br>"
 			+ "<h1><a href=" + uriA + "&format=" + document.getElementById("vformat").options[document.getElementById("vformat").selectedIndex].value
 			+ "%2B" + document.getElementById("aformat").options[document.getElementById("aformat").selectedIndex].value + ">Download</a></h1>";
 		}
 	} else {
 		document.getElementById("aformat").disabled = true;
 		document.getElementById("aformat").style.color = "grey";
-		document.getElementById("info").innerHTML = "<h3>Всього: " + humanFileSize((myObj[3][vindex])) + "</h3><br>"
+		document.getElementById("info").innerHTML = "<h3>Всього: " + humanFileSize((myObj[3][video_index])) + "</h3><br>"
 		+ "<h1><a href=" + uriA + "&format=" + document.getElementById("vformat").options[document.getElementById("vformat").selectedIndex].value + ">Download</a></h1>";
 
 	}
@@ -58,8 +54,8 @@ function UpdateSelect () {
 
 function GetInfo () {
 
-var xmlhttp = new XMLHttpRequest();
-xmlhttp.onreadystatechange = function() {
+    let xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
 	if (this.readyState == 4 && this.status == 200) {
 		myObj = JSON.parse(this.responseText);
 		document.getElementById("vname").innerText = myObj[0];
@@ -97,11 +93,11 @@ function humanFileSize(bytes, si=false, dp=1) {
   return bytes.toFixed(dp) + ' ' + units[u];
 }
 
-var toHHMMSS = (secs) => {
-    var sec_num = parseInt(secs, 10)
-    var hours   = Math.floor(sec_num / 3600)
-    var minutes = Math.floor(sec_num / 60) % 60
-    var seconds = sec_num % 60
+let toHMS = (secs) => {
+    let sec_num = parseInt(secs, 10);
+    let hours = Math.floor(sec_num / 3600);
+    let minutes = Math.floor(sec_num / 60) % 60;
+    let seconds = sec_num % 60;
 
     return [hours,minutes,seconds]
         .map(v => v < 10 ? "0" + v : v)
@@ -125,14 +121,14 @@ GetInfo();
 <?php
 	if ($format == "") {
 	echo "<h2><strong>".$lang["Choose quality"]."</strong></h2>\r\n";
-	echo "<h3>".$lang["Avitable quality"].": </h3><br>\r\n";
+	echo "<h3>".$lang["Available quality"].": </h3><br>\r\n";
 echo('<select id="vformat" ONCHANGE="UpdateSelect();"></select>');
 echo('<select id="aformat" ONCHANGE="UpdateSelect();"></select>');
 echo "<br>\r\n".$SourceFile."<br>\r\n";
 	$errors = 1;
 	}
 	else {
-		echo "<h3>".$lang["Selected quality"].": <strong>".Qualitys($format)."</strong></h3><br>\r\n";
+		echo "<h3>".$lang["Selected quality"].": <strong>".$format."</strong></h3><br>\r\n";
 		if (trim($name) != ''){
 			$name = formatName($name);
 		}
@@ -143,13 +139,12 @@ echo "<br>\r\n".$SourceFile."<br>\r\n";
 			$name = formatName($founded[1]);
 		}
 		echo $lang["File name"].": $name - $format<br><br>";
-		$Command = 'youtube-dl -f '.$format.' -o "'.$myDirectory.DIRECTORY_SEPARATOR.$name.'.%(ext)s" '.$id;
+		$Command = 'youtube-dl -f '.$format.' -o "'.$downloadDirectory.DIRECTORY_SEPARATOR.$name.'.%(ext)s" '.$id;
 	}
 
-//echo $Command;
 if ( $errors == 0) {
 	if ($log == 'on'){
-		exec( $Command.' > "'.$myDirectory.DIRECTORY_SEPARATOR.$name.'"_log.txt 2>&1 &' );
+		exec( $Command.' > "'.$downloadDirectory.DIRECTORY_SEPARATOR.$name.'"_log.txt 2>&1 &' );
 	}
 	else {
 		exec( $Command.' > /dev/null &' );

@@ -3,6 +3,7 @@ include 'config.php';
 function pasteHeader($title){
 return "<!DOCTYPE html>\r\n<meta http-equiv='content-type' content='text/html; charset=utf-8' />\r\n<title>$title</title>\r\n<link rel='stylesheet' href='style.css'>\r\n";
 }
+
 function filesize_formatted($size){
     $units = array( 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
     $power = $size > 0 ? floor(log($size, 1024)) : 0;
@@ -10,7 +11,7 @@ function filesize_formatted($size){
 }
 
 function getDirContents($directoryF, $original = ''){
-	if (empty($original)) { $original = $directoryF; }
+	if (empty($original)) $original = $directoryF;
 	$files = scandir($directoryF);
 	foreach($files as $key => $value){
 		$path = realpath($directoryF.DIRECTORY_SEPARATOR.$value);
@@ -21,115 +22,47 @@ function getDirContents($directoryF, $original = ''){
 			$results = array_merge($results, getDirContents($path, $original));
 		}
 	}
-	if (isset($results)) {
-		return $results;
-	}
+    if (isset($results)) return $results;
+    else return null;
 }
 
-
-function workNames($iTag){
-        switch ($iTag) {
-                case d: $Message = 'Завантаження';break;
-                case del: $Message = 'Видалення';break;
-                case u:$Message = 'Аплоадінг';break;
-                default:$Message = 'Щось інше';break;
-        }
-        return $Message;
-}
-
-
-function Qualitys($iTag){
-        switch ($iTag) {
-		case 5: $Message = '240p flv (400x240)';break;
-                case 6: $Message = '270p Flv (450x270)';break;
-                case 13:$Message = '3gp';break;
-                case 17:$Message = '144p 3gp (176x144)';break;
-                case 18:$Message = '360p mp4 (640x360)';break;
-                case 22:$Message = '720p mp4 (1280x720)';break;
-                case 34:$Message = '360p flv (640x360';break;
-                case 35:$Message = '480p flv (854x480';break;
-                case 36:$Message = '240p 3gp (320x240';break;
-                case 37:$Message = '1080p mp4 (1920x1080)';break;
-                case 38:$Message = '3072p mp4 (4096x3072)';break;
-                case 43:$Message = '360p webm (640x360)';break;
-                case 44:$Message = '480p webm (854x480)';break;
-                case 45:$Message = '720p webm (1280x720)';break;
-                case 249:$Message = 'Audio @56k - Webm';break;
-                case 46:$Message = '1080p webm (1920x1080)';break;
-                case 250:$Message = 'Audio @75k - Webm';break;
-                case 171:$Message = 'Audio @117k - Webm';break;
-                case 140:$Message = 'Audio @131k - m4a';break;
-                case 251:$Message = 'Audio @144k - Webm';break;
-                case 160:$Message = '144p - Mp4 (256x144)';break;
-                case 278:$Message = '144p - Webm (256x144)';break;
-                case 133:$Message = '240p - mp4 (426x240)';break;
-                case 242:$Message = '240p - webm (426x240)';break;
-		case 243:$Message = '360p - webm';break;
-                case 137:$Message = '1080p - avc1 video only';break;
-                case 243:$Message = '360p - webm (640x360)';break;
-                case 599:$Message = 'audio @32k m4a/mp4a';break;
-                case 600:$Message = 'audio @39k webm/opus';break;
-                default:$Message = 'NotSet';break;
-        }
-        return $Message;
-}
-
-function GetVideoSourceUrl($Baglanti){
-        $YtVideoID = explode('v=', $Baglanti);
-        $YtVideoID = end($YtVideoID);
-        $YtVideoID = substr($YtVideoID, 0, 11);
-        $Links = array();
-        $Title = '';
-        $Source = file_get_contents('https://www.youtube.com/get_video_info?&video_id='.$YtVideoID.'&hl=en');
-        parse_str($Source,$Results2);
+function GetVideoSourceUrl($videoURL){
+    $YtVideoID = explode('v=', $videoURL);
+    $YtVideoID = end($YtVideoID);
+    $YtVideoID = substr($YtVideoID, 0, 11);
+    $Links = array();
+    $Source = file_get_contents('https://www.youtube.com/get_video_info?&video_id='.$YtVideoID.'&hl=en');
+    parse_str($Source,$Results2);
 	$Results2['player_response'] = isset($Results2['player_response'])?$Results2['player_response']:false;
 	$Results = json_decode($Results2['player_response'], true);
-        $Title = $Results['videoDetails']["title"];
-	if (isset($Results['thumbnail']['thumbnails'][0])) { $Thumbnail = $Results['thumbnail']['thumbnails'][0];}
-	//print_r($Results);
-
-        if(isset($Results['streamingData']['adaptiveFormats'])){
-                $UrlInformation = $Results['streamingData']['adaptiveFormats'];
-                foreach($UrlInformation as $VideoInformation){
-			if (isset($VideoInformation['audioChannels']) && $VideoInformation['audioChannels']){
-				$VideoUrl = urldecode($VideoInformation['url']);
-                	        $Formats[] = $VideoInformation['itag'];
-        	                $Links[] = urlencode($VideoUrl);
-	                        $size[] = filesize_formatted($VideoInformation['contentLength']);
-				//$Thumbnail = $VideoInformation;
-				//$bitrate[] = $VideoInformation['qualityLabel']." (".filesize_formatted($VideoInformation['bitrate'])."/s)";
-				$mmetype[] = explode("/", explode(";", $VideoInformation['mimeType'])[0])[1];
-			}
-		}
+	$Title = $Results['videoDetails']["title"];
+	if(isset($Results['streamingData']['adaptiveFormats'])){
+	    $UrlInformation = $Results['streamingData']['adaptiveFormats'];
+	    foreach($UrlInformation as $VideoInformation){
+	        if (isset($VideoInformation['audioChannels']) && $VideoInformation['audioChannels']){
+	            $VideoUrl = urldecode($VideoInformation['url']);
+	            $Formats[] = $VideoInformation['itag'];
+	            $Links[] = urlencode($VideoUrl);
+	            $size[] = filesize_formatted($VideoInformation['contentLength']);
+	            $mimetypes[] = explode("/", explode(";", $VideoInformation['mimeType'])[0])[1];
+	        }
+	    }
 	}
-
-        if(isset($Results['streamingData']['formats'])){
-                $UrlInformation = $Results['streamingData']['formats'];
-                foreach($UrlInformation as $VideoInformation){
-                        $VideoUrl = urldecode($VideoInformation['url']);
-                        $Formats[] = $VideoInformation['itag'];
-                        if (isset($VideoUrl)) { $Links[] = urlencode($VideoUrl); } else { $Links[] = ""; }
-			if (isset($VideoInformation['contentLength'])) { $size[] = filesize_formatted($VideoInformation['contentLength']); } else { $size[] = 0;}
-			if (isset( $VideoInformation['qualityLabel'])) { $bitrate[] = $VideoInformation['qualityLabel']." (".filesize_formatted($VideoInformation['bitrate'])."/s)"; } else { $bitrate[] = ""; }
-			$mmetype[] = explode("/", explode(";", $VideoInformation['mimeType'])[0])[1];
-               }
-        }
-	if (isset($Title) && isset($Formats) && isset($Links) && isset($size)) {
-        	return array($Title, $Formats, $Links, $size, $mmetype);
+	if(isset($Results['streamingData']['formats'])){
+	    $UrlInformation = $Results['streamingData']['formats'];
+	    foreach($UrlInformation as $VideoInformation){
+	        $VideoUrl = urldecode($VideoInformation['url']);
+	        $Formats[] = $VideoInformation['itag'];
+	        if (isset($VideoUrl)) { $Links[] = urlencode($VideoUrl); } else { $Links[] = ""; }
+	        if (isset($VideoInformation['contentLength'])) { $size[] = filesize_formatted($VideoInformation['contentLength']); } else { $size[] = 0;}
+	        if (isset( $VideoInformation['qualityLabel'])) { $bitrate[] = $VideoInformation['qualityLabel']." (".filesize_formatted($VideoInformation['bitrate'])."/s)"; } else { $bitrate[] = ""; }
+	        $mimetypes[] = explode("/", explode(";", $VideoInformation['mimeType'])[0])[1];
+	    }
 	}
+	if (isset($Title) && isset($Formats) && isset($Links) && isset($size) && isset($mimetypes)) return array($Title, $Formats, $Links, $size, $mimetypes);
+	else return null;
 }
 
-
-function youtube_parse_youtube_id( $data )
-{
-	// IF 11 CHARS
-	if( strlen($data) == 11 )
-	{
-		return $data;
-	}
-	preg_match( "/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/", $data, $matches);
-	return isset($matches[2]) ? $matches[2] : false;
-}
 
 function formatName($string) {
   $q = chr(226).chr(128).chr(179); $s = chr(226).chr(128).chr(178);
@@ -219,7 +152,7 @@ function formatName($string) {
   chr(208).chr(173)=>'Eh',chr(209).chr(141)=>'eh',chr(208).chr(174)=>'Ju',
   chr(209).chr(142)=>'ju',chr(208).chr(175)=>'Ya',chr(209).chr(143)=>'ja');
   $string = strtr($string, $chars);
-  $string = trim(preg_replace('/[^a-zA-Z0-9-_!()\.]/', ' ', $string));
+  $string = trim(preg_replace('/[^a-zA-Z0-9-_!().]/ui', ' ', $string));
   return $string;
 }
 
@@ -236,13 +169,6 @@ function makeRandomString($max=12) {
     return $str;
 }
 
-function filesize_formatted1($size)
-{
-    $units = array( 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
-    $power = $size > 0 ? floor(log($size, 1024)) : 0;
-    return number_format($size / pow(1024, $power), 3, '.', ',') . ' ' . $units[$power];
-}
-
 function get_dir_size($directory) {
     $size = 0;
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS)) as $file) {
@@ -252,39 +178,27 @@ function get_dir_size($directory) {
 }
 
 
-
-function startsWith($haystack, $needle)
-{
-     $length = strlen($needle);
-     return (substr($haystack, 0, $length) === $needle);
-}
-
-function endsWith($haystack, $needle)
-{
+function endsWith($haystack, $needle) {
     $length = strlen($needle);
-    if ($length == 0) {
-        return true;
-    }
-
+    if ($length == 0) return true;
     return (substr($haystack, -$length) === $needle);
 }
 
 function getFromYDL($id) {
-	$outArray = json_decode(shell_exec("/usr/local/bin/youtube-dl -j $id"), true);
+    $outArray = json_decode(shell_exec("/usr/local/bin/youtube-dl -j $id"), true);
 	$Title = $outArray['title'];
 	foreach($outArray["formats"] as $information){
-                        $VideoUrl[] = urldecode($information['url']);
-                        $Formats[] = explode(" ", $information['format'])[0];
-			if ($information['acodec'] != 'none') {
-				$descr[] = explode("-", $information['format'])[1];
-			} else {
-				$descr[] = explode("-", $information['format'])[1];
-			}
-			$size[] = $information['filesize'];
-			$mmetype[] = $information['ext'];
-			$vcodec[] = $information['vcodec'];
-			$acodec[] = $information['acodec'];
-        }
-                return array($Title, $Formats, $VideoUrl, $size, $mmetype, $descr, $vcodec, $acodec);
+	    $VideoUrl[] = urldecode($information['url']);
+	    $Formats[] = explode(" ", $information['format'])[0];
+	    if ($information['acodec'] != 'none') {
+	        $descr[] = explode("-", $information['format'])[1];
+	    } else {
+	        $descr[] = explode("-", $information['format'])[1];
+	    }
+	    $size[] = $information['filesize'];
+	    $mmetype[] = $information['ext'];
+	    $vcodec[] = $information['vcodec'];
+	    $acodec[] = $information['acodec'];
+	}
+	return array($Title, $Formats, $VideoUrl, $size, $mmetype, $descr, $vcodec, $acodec);
 }
-?>
