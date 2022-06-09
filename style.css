@@ -89,6 +89,9 @@ img {
 	border-radius: 4%;
 	border: 15px double #0C2F02;
 	padding: 0;
+        max-width: 320px;
+	max-height: 180px;
+	width: 75%
 }
 
 input[type=checkbox]
@@ -185,6 +188,7 @@ body {
 	width: 98%;
 	height: 98%;
 }
+
 .wrapper {
 	width: 100%;
 	margin: 0 auto;
@@ -199,7 +203,7 @@ body {
 
 .middle {
 	width: 100%;
-	padding: 0 0 100px;
+	padding: 0 0 10%;
 	position: relative;
 }
 .middle:after {
@@ -213,19 +217,37 @@ body {
 	overflow: hidden;
 }
 .content {
-	padding: 0 0 0 270px;
+	padding: 0 0 0 50%;
 }
 
 .left-sidebar {
 	float: left;
-	width: 40%;
+	width: 50%;
 	margin-left: -100%;
 	position: relative;
 }
 
 .footer {
 	width: 100%;
-	margin: -80px auto 0;
-	height: 80px;
+	margin: -25% auto 0;
+	height: 10%;
 	position: relative;
+}
+
+
+label {
+	display: inline-block;
+        width: 20%;
+}
+
+input {
+	display: inline-block;
+	width: 45%;
+}
+
+form {
+	display: inline-block;
+	max-width: 600px;
+	width:98%;
+	border: 4px double #2C5F10;
 }

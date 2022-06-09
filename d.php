@@ -14,16 +14,14 @@ if (isset($_GET['log'])) $log = $_GET['log'];
 
 $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 $errors = 0;
-echo pasteHeader($lang["Loader"]." $mySite");
 
 if (preg_match('/^(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/i', $url, $founded)){
-	echo "<h2>Youtube</h2><br>\r\n";
-	echo ($lang["Video ID"].": ".formatName($founded[1])."<br>\r\n");
-	$Results = GetVideoSourceUrl($founded[1]);
 	header("HTTP/1.1 301 Moved Permanently");
 	header("Location: /y.php?id=".$founded[1])."&log".$log;
 }
+
 elseif (preg_match("/^https?:\/\/.*\.(m3u8)$/i", $url)) {
+echo pasteHeader($lang["Loader"]." $mySite");
 	echo "M3U8<br>\r\n";
 	if ($name == '') {
 		echo $lang["The name is not specified, the random name will be used"]." <br><br>";
@@ -34,6 +32,7 @@ elseif (preg_match("/^https?:\/\/.*\.(m3u8)$/i", $url)) {
 	$Command = 'ffmpeg -i '.$url.' -bsf:a aac_adtstoasc -c copy "'.$filename.'.mp4"';
 }
 elseif (preg_match('/^https:\/\/soundcloud.com*/iu', $url)) {
+echo pasteHeader($lang["Loader"]." $mySite");
 	$secKey = "6QvdRwJ2FQEAWlMafWqRjnI9hsdVKNeE";
 	$url_api='https://api.soundcloud.com/resolve.json?url='.$url.'&client_id='.$secKey;
 	$json = file_get_contents($url_api);
@@ -55,16 +54,31 @@ elseif (preg_match('/^https:\/\/soundcloud.com*/iu', $url)) {
 	if(!isset($_GET["donwload"])){ $errors = 1; echo ("<a class='button' href='$actual_link&donwload=yes'>".$lang["download"]."</a><br>"); }
 }
 elseif (preg_match('/^https?:\/\/.*/', $url)) {
+echo pasteHeader($lang["Loader"]." $mySite");
         echo "HTTP<br>\r\n";
         $Command = 'wget --progress=bar -P '.$downloadDirectory.DIRECTORY_SEPARATOR.' '.$url;
 		if (trim($name) != ''){
-			echo (lang["File_name"].": $name<br><br>");
+			echo ($lang["File_name"].": $name<br><br>");
 			$Command = 'wget -O "'.$downloadDirectory.DIRECTORY_SEPARATOR.$name.'" "'.$url.'"';
 		} else $name = basename($url);
 }
 
 else if ($url == '') {
-echo "<!DOCTYPE html><meta charset='utf-8'><link rel='stylesheet' href='style.css'><html lang='ua'><body><div style='align: center;width=80%;'><form action='d.php' method='get' enctype='multipart/form-data' style='width:600px; border: 4px double #2C5F10;'>".$lang["URL (https?://)"].":    <input type='url' name='url' id='url' required><br>".$lang["How to name it"].":             <input type='text' name='name' id='name'><br>                        ".$lang["Enable log"].":              <input type='checkbox' name='log' id='log'><br><input type='submit'> <input type='reset'> <br><br></form>        </div></body></html>";
+echo pasteHeader($lang["Loader"]." $mySite");
+echo "<!DOCTYPE html>
+	<meta charset='utf-8'>
+	<link rel='stylesheet' href='style.css'>
+	<html lang='ua'>
+	<body style='text-align: center;'>
+		<form action='d.php' method='get' enctype='multipart/form-data'>
+			<br><label for='url'>".$lang["URL (https?://)"].":</label><input type='url' name='url' id='url' required>
+			<br><label for='name'>".$lang["How to name it"].":</label><input type='text' name='name' id='name'>
+			<br>".$lang["Enable log"].":              <input type='checkbox' name='log' id='log'>
+			<br><input type='submit'> 
+			<input type='reset'>
+			<br><br>
+		</form><br><br>
+    	";
 	$errors = 255;
 }
 
@@ -80,4 +94,7 @@ if ( $errors == 0) {
 else {
 	echo "<br><size='30' color='red'>".$lang["ERROR"]."</>";
 }
-echo "<H2><a class='button' href='$mySiteHttps'>".$lang["Home"]."</a></H2><br>\r\n";
+echo "<H2><a class='button' href='$mySiteHttps'>".$lang["Home"]."</a></H2><br>
+</body>
+</html>";
+

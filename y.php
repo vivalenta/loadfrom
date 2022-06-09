@@ -3,9 +3,9 @@ require 'function.php';
 require 'config.php';
 
 if (isset($_GET['id'])) $id = $_GET['id'];
-if (isset($_GET['name'])) $name = $_GET['name'];
-if (isset($_GET['format'])) $format = $_GET['format'];
-if (isset($_GET['log'])) $log = $_GET['log'];
+if (isset($_GET['name'])) { $name = $_GET['name']; } else { $name = ""; }
+if (isset($_GET['format'])) { $format = $_GET['format']; } else { $format = ""; };
+if (isset($_GET['log'])) { $log = $_GET['log'];  } else { $log = ""; }
 
 $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 $errors = 0;
@@ -111,21 +111,18 @@ GetInfo();
 
 <body>
 <div class="wrapper">
-	<header class="header">
-		<h2>Youtube</h2>
-	</header><!-- .header-->
+	<header class="header"><h2>Youtube</h2></header>
 
 	<div class="middle">
 		<div class="container">
 			<main class="content">
 <?php
 	if ($format == "") {
-	echo "<h2><strong>".$lang["Choose quality"]."</strong></h2>\r\n";
-	echo "<h3>".$lang["Available quality"].": </h3><br>\r\n";
-echo('<select id="vformat" ONCHANGE="UpdateSelect();"></select>');
-echo('<select id="aformat" ONCHANGE="UpdateSelect();"></select>');
-echo "<br>\r\n".$SourceFile."<br>\r\n";
-	$errors = 1;
+		echo "<h2><strong>".$lang["Choose quality"]."</strong></h2>\r\n";
+		echo "<h3>".$lang["Available quality"].": </h3><br>\r\n";
+		echo('<select id="vformat" ONCHANGE="UpdateSelect();"></select>');
+		echo('<select id="aformat" ONCHANGE="UpdateSelect();"></select>');
+		$errors = 1;
 	}
 	else {
 		echo "<h3>".$lang["Selected quality"].": <strong>".$format."</strong></h3><br>\r\n";
@@ -138,8 +135,8 @@ echo "<br>\r\n".$SourceFile."<br>\r\n";
 		else {
 			$name = formatName($founded[1]);
 		}
-		echo $lang["File name"].": $name - $format<br><br>";
-		$Command = 'youtube-dl -f '.$format.' -o "'.$downloadDirectory.DIRECTORY_SEPARATOR.$name.'.%(ext)s" '.$id;
+		echo $lang["File name"].": $name<br><br>";
+		$Command = 'python3 /usr/local/bin/youtube-dl -f '.$format.' -o "'.$downloadDirectory.DIRECTORY_SEPARATOR.$name.'.%(ext)s" '.$id;
 	}
 
 if ( $errors == 0) {
@@ -164,7 +161,7 @@ else {
 
 		<aside class="left-sidebar">
 <?php
-echo ($lang["Video Name"].": <a id=vname></a><br>\r\n");
+echo ($lang["Video Name"].": <p id=vname></p><br>\r\n");
 echo ("\t\t<img src='https://i.ytimg.com/vi/".$id."/mqdefault.jpg' alt='Пхото'/><br>\r\n");
 echo ("<p>" . $lang["Video ID"] . ": <a id=vid>".formatName($id)."</a></p><br>\r\n");
 ?>

@@ -29,9 +29,26 @@ function getDirContents($directoryF, $original = ''){
 function GetVideoSourceUrl($videoURL){
     $YtVideoID = explode('v=', $videoURL);
     $YtVideoID = end($YtVideoID);
+    $results = substr($YtVideoID, 0, 11);
+    if (isset($results)) return $results;
+    else return null;
+}
+
+function GetVideoSourceUrl1($videoURL){
+    $YtVideoID = explode('v=', $videoURL);
+    $YtVideoID = end($YtVideoID);
     $YtVideoID = substr($YtVideoID, 0, 11);
     $Links = array();
-    $Source = file_get_contents('https://www.youtube.com/get_video_info?&video_id='.$YtVideoID.'&hl=en');
+    $opts = array(
+      'http'=>array(
+        'method'=>"GET",
+        'header'=>"Accept-language: en\r\n" .
+                  "Cookie: foo=bar\r\n"
+      )
+    );
+
+    $context = stream_context_create($opts);
+    $Source = file_get_contents('https://www.youtube.com/get_video_info?&video_id='.$YtVideoID.'&hl=en', false, $context);
     parse_str($Source,$Results2);
 	$Results2['player_response'] = isset($Results2['player_response'])?$Results2['player_response']:false;
 	$Results = json_decode($Results2['player_response'], true);
@@ -185,7 +202,7 @@ function endsWith($haystack, $needle) {
 }
 
 function getFromYDL($id) {
-    $outArray = json_decode(shell_exec("/usr/local/bin/youtube-dl -j $id"), true);
+    $outArray = json_decode(shell_exec("python3 /usr/local/bin/youtube-dl -j $id"), true);
 	$Title = $outArray['title'];
 	foreach($outArray["formats"] as $information){
 	    $VideoUrl[] = urldecode($information['url']);
