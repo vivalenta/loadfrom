@@ -1,4 +1,4 @@
-k<?php
+<?php
 require 'function.php';
 require 'config.php';
 
@@ -18,34 +18,25 @@ $indexCount = isset($dirArray) ? count($dirArray) : 0;
 echo pasteHeader($lang["Loader"] . " $mySite");
 
 print("<TABLE>\r\n");
-print("<TR><TH>" . $lang["Name"] . "</TH><th style=\"width:220px;\">" . $lang["Data"] . "</th><th style=\"width:120px;\"  >" . $lang["Size"] . "</th><th style=\"width:40px;\"  >" . $lang["Del"] . "</th></TR>\r\n");
+if ($trash == "1") {
+	print("<TR><TH>" . $lang["Name"] . "</TH><th style=\"width:220px;\">" . $lang["Data"] . "</th><th style=\"width:120px;\"  >" . $lang["Size"] . "</th><th style=\"width:40px;\"  >" . $lang["Restore"] . "</th><th style=\"width:40px;\"  >" . $lang["Del"] . "</th></TR>\r\n");
+} else {
+	print("<TR><TH>" . $lang["Name"] . "</TH><th style=\"width:220px;\">" . $lang["Data"] . "</th><th style=\"width:120px;\"  >" . $lang["Size"] . "</th><th style=\"width:40px;\"  >" . $lang["Del"] . "</th></TR>\r\n");
+}
 for ($index = 0; $index < $indexCount; $index++) {
 	if ((substr("$dirArray[$index]", 0, 1) != ".") and !is_dir($downloadDirectory . DIRECTORY_SEPARATOR . $dirArray[$index])) {  // don't list hidden files
 		if ($trash == "1") {
-			print("<TR><td style='text-align: left;'><a href='http://$mySite/trash/");
-			print $dirArray[$index];
-			print("'>$dirArray[$index]</a></td>");
+			print("<TR><td style='text-align: left;'><a href='http://$mySite/trash/$dirArray[$index]'>$dirArray[$index]</a></td>");
+			print("<td>" . date("Y-m-d H:i:s", filemtime($downloadDirectory . DIRECTORY_SEPARATOR . $dirArray[$index])) . "</td>");
+			print("<td>" . filesize_formatted(filesize($downloadDirectory . DIRECTORY_SEPARATOR . $dirArray[$index])) . "</td>");
+			print("<td><a href='http://$mySite/del.php?trash=restore&file=$dirArray[$index]'>R</a></td>\r\n");
+			print("<td><a href='http://$mySite/del.php?trash=yes&file=$dirArray[$index]'>X</a></td></TR>\r\n");
 		} else {
-			print("<TR><td style='text-align: left;'><a href='http://$mySite/downloads/");
-			print $dirArray[$index];
-			print("'>$dirArray[$index]</a></td>");
+			print("<TR><td style='text-align: left;'><a href='http://$mySite/downloads/$dirArray[$index]'>$dirArray[$index]</a></td>");
+			print("<td>" . date("Y-m-d H:i:s", filemtime($downloadDirectory . DIRECTORY_SEPARATOR . $dirArray[$index])) . "</td>");
+			print("<td>" . filesize_formatted(filesize($downloadDirectory . DIRECTORY_SEPARATOR . $dirArray[$index])) . "</td>");
+			print("<td><a href='http://$mySite/del.php?file=$dirArray[$index]'>X</a></td></TR>\r\n");
 		}
-		print("<td>");
-		print(date("Y-m-d H:i:s", filemtime($downloadDirectory . DIRECTORY_SEPARATOR . $dirArray[$index])));
-		print("</td>");
-		print("<td>");
-		print(filesize_formatted(filesize($downloadDirectory . DIRECTORY_SEPARATOR . $dirArray[$index])));
-		print("</td>");
-		print("<td>");
-		if ($trash == "1") {
-			print("<a href='http://$mySite/del.php?trash=yes&file=");
-		} else {
-			print("<a href='http://$mySite/del.php?file=");
-		}
-		print $dirArray[$index];
-		print("'>X</a>");
-		print("</td>");
-		print("</TR>\r\n");
 	}
 }
 $percent = round(($myDirectorySize * 100 / disk_free_space("/")), 2);
@@ -80,4 +71,3 @@ if ($trash != "1") {
 	print("<a class='button' href='del.php?trash=alltrash&file=alltrash'>DEL Trash</a> ");
 }
 echo "</html>";
-

@@ -3,10 +3,7 @@ include 'config.php';
 include 'function.php';
 $trash = "";
 $FileName = "";
-if (isset($_GET['trash'])) {
-	$downloadDirectory = $trashD;
-	$trash = $_GET['trash'];
-}
+if (isset($_GET['trash'])) $trash = $_GET['trash'];
 if (isset($_GET['file'])) {
 	$FileName = rawurldecode($_GET['file']);
 	$fileD = $downloadDirectory . DIRECTORY_SEPARATOR . $FileName;
@@ -23,7 +20,7 @@ print("<meta http-equiv='refresh' content='5; url=" . $mySiteHttps . "'></head><
 if (isset($_GET['file'])) {
 	if ($trash == "alltrash") {
 		if ($yes == "yes") {
-			$mask = $downloadDirectory . DIRECTORY_SEPARATOR . '*';
+			$mask = $trashD . DIRECTORY_SEPARATOR . '*';
 			array_map('unlink', glob($mask));
 			print($lang["Done"] . "</a></h1><br><br>\r\n<small>" . $lang["Deleted"] . ": All Trash</small>");
 		} else {
@@ -33,7 +30,7 @@ if (isset($_GET['file'])) {
 		}
 	} elseif ($FileName == "alllogs") {
 		if ($yes == "yes") {
-			$mask = $downloadDirectory . DIRECTORY_SEPARATOR . '*_log.txt';
+			$mask = $trashD . DIRECTORY_SEPARATOR . '*_log.txt';
 			array_map('unlink', glob($mask));
 			print($lang["Done"] . "</a></h1><br><br>\r\n<small>" . $lang["Deleted"] . ": All Logs</small>");
 		} else {
@@ -41,6 +38,11 @@ if (isset($_GET['file'])) {
 			print("<a class='button' href='del.php?file=alllogs&yes=yes'>Yes</a> ");
 			print("<a class='button' href='index.php'>No</a> ");
 		}
+	} elseif ($trash == "restore") {
+		rename($trashD . DIRECTORY_SEPARATOR . $FileName, $downloadDirectory . DIRECTORY_SEPARATOR . $FileName);
+		print($lang["Done"] . "</a></h1><br><br>\r\n<small>" . $lang["Deleted"] . ": $FileName</small>");
+	} elseif (file_exists($trashD . DIRECTORY_SEPARATOR . $FileName)) {
+		unlink($trashD . DIRECTORY_SEPARATOR . $FileName);
 	} elseif (file_exists($fileD)) {
 		if ($trash == "yes") {
 			unlink($fileD);

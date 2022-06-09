@@ -12,6 +12,7 @@ $lang = array(
     "Data" => "Дата",
     "DataTimeFormat" => "Y-m-d H:i:s",
     "Del" => "Вид",
+    "Restore" => "Від",
     "Deleted" => "Видалено",
     "Done" => "Готово",
     "ERROR" => "ПОМИЛКА",
@@ -34,6 +35,5 @@ $lang = array(
     "Video Name" => "Назва відео",
     "Welcome" => "Привіт",
     "does not exist" => "не існує",
-
  );
 
