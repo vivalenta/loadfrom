@@ -33,13 +33,13 @@ function UpdateSelect () {
 		document.getElementById("aformat").disabled = false;
 		if (video_index == -1) {
 			document.getElementById("info").innerHTML = "<h3>Всього: " + humanFileSize(myObj[3][audio_index]) + "</h3><br>" +
-			"<h1><a href=" + uriA + "&format=" + document.getElementById("aformat").options[document.getElementById("aformat").selectedIndex].value + ">Download</a></h1>";
+			"<h1><a class='button' href=" + uriA + "&format=" + document.getElementById("aformat").options[document.getElementById("aformat").selectedIndex].value + ">Download</a></h1>";
 
 		} else {
 			document.getElementById("info").innerHTML = "<small>" + myObj[4][video_index] + " - " + myObj[5][video_index] + " | " + humanFileSize(myObj[3][video_index]) +
 			" + "  + myObj[4][audio_index] + " - " + myObj[5][audio_index] + " | " + humanFileSize(myObj[3][audio_index]) +
 			"</small><br><h3>Всього: " + humanFileSize((myObj[3][audio_index] + myObj[3][video_index])) + "</h3><br>"
-			+ "<h1><a href=" + uriA + "&format=" + document.getElementById("vformat").options[document.getElementById("vformat").selectedIndex].value
+			+ "<h1><a class='button' href=" + uriA + "&format=" + document.getElementById("vformat").options[document.getElementById("vformat").selectedIndex].value
 			+ "%2B" + document.getElementById("aformat").options[document.getElementById("aformat").selectedIndex].value + ">Download</a></h1>";
 		}
 	} else {
@@ -152,7 +152,7 @@ if ( $errors == 0) {
 else if ($errors == 255) {
 }
 else {
-	echo "<br><div id=info>".$lang["ERROR"]."</div>";
+	echo "<br><div class='button' id=info>".$lang["ERROR"]."</div>";
 }
 ?>
 

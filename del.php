@@ -30,8 +30,10 @@ if (isset($_GET['file'])) {
 		}
 	} elseif ($FileName == "alllogs") {
 		if ($yes == "yes") {
-			$mask = $trashD . DIRECTORY_SEPARATOR . '*_log.txt';
+			$maskT = $trashD . DIRECTORY_SEPARATOR . '*_log.txt';
+			$mask = $downloadDirectory . DIRECTORY_SEPARATOR . '*_log.txt';
 			array_map('unlink', glob($mask));
+			array_map('unlink', glob($maskT));
 			print($lang["Done"] . "</a></h1><br><br>\r\n<small>" . $lang["Deleted"] . ": All Logs</small>");
 		} else {
 			print("</head><body><h1>Delete ALL logs<br></h1>");
